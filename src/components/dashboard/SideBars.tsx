@@ -1,25 +1,21 @@
 "use client"
 import React, { useState } from 'react'
 import { Button } from '../ui/button'
-import { Store, Package, DollarSign, Users, ShoppingCart, Workflow, PackageSearch, LayoutDashboard,BaggageClaim, HandCoins } from 'lucide-react'
+import { Store, Users, ShoppingCart, PackageSearch, LayoutDashboard, HandCoins } from 'lucide-react'
 import { ScrollArea } from "@/components/ui/scroll-area"
-import useUi from '@/hook/useUI'
 import Link  from 'next/link'
+import useUiStore from '@/store/uiStore'
 
 const SideBars = () => {
     const [active, setActive] = useState<string | null>(null)
-    const { toggle } = useUi()
+    const { toggle } = useUiStore()
 
     const menuItems = [
         { icon: LayoutDashboard, label: 'DashBoard', path: '/home/dashboard' },
-        { icon: Package, label: 'Inventory', path: 'inventory' },
-        { icon: DollarSign, label: 'Sale', path: 'sale' },
         { icon: PackageSearch, label: 'Products', path: 'product' },
+        { icon: ShoppingCart, label: 'Category', path: 'category' },
         { icon: Users, label: 'User', path: 'user' },
-        { icon: ShoppingCart, label: 'Purchase', path: 'purchase' },
-        { icon: BaggageClaim, label: 'Order', path: 'order' },
-        { icon: HandCoins, label: 'Payment', path: 'payment' },
-        { icon: Workflow, label: 'Integration', path: 'integration' },
+        { icon: HandCoins, label: 'Supplier', path: 'supplier' },
     ]
 
     const MenuItem = ({ icon: Icon, label, path }: { icon: React.ElementType, label: string, path: string }) => (

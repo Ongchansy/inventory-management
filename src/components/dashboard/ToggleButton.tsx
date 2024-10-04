@@ -2,10 +2,10 @@
 import React from 'react'
 import { Button } from '../ui/button'
 import { Menu } from 'lucide-react'
-import useUi from '@/hook/useUI'
+import useUiStore from '@/store/uiStore'
 
 const ToggleButton = () => {
-    const {setToggle} = useUi()
+    const {setToggle} = useUiStore()
   return (
     <div>
             <Button 

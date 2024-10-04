@@ -1,12 +1,12 @@
-import { MainTable } from '@/components/table/MainTable'
 import React from 'react'
+import UserTable from "@/components/dashboard/UserTable";
 
-const Product = () => {
+const Sale = () => {
   return (
-    <div>
-        <MainTable />
-    </div>
+      <div>
+        <h2>Product</h2>
+      </div>
   )
 }
 
-export default Product
+export default Sale

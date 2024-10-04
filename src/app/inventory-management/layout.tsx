@@ -9,9 +9,9 @@ interface LayoutProps {
 
 const Layout: FC<LayoutProps> = ({ children }) => {
     return (
-        <div className="flex h-screen overflow-hidden">
+        <div className="flex h-screen ">
             <SideBars />
-            <main className="flex flex-col w-full ">
+            <main className="flex flex-col w-full overflow-hidden ">
                 <Header />
                 <div className="overflow-y-auto relative">
 
