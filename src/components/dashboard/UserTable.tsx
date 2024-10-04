@@ -28,8 +28,10 @@ const UserTable = () => {
                 header: 'Actions',
                 cell: ({ row }) => (
                     <button
+                        title='View user'
+                        type="button"
                         className="text-blue-600 hover:text-blue-800 transition-colors"
-                        onClick={() => selectUser(row.original)}
+                        onClick={() => selectUser(row.original, null)}
                     >
                         <Eye className="w-5 h-5" />
                     </button>
@@ -92,7 +94,7 @@ const UserTable = () => {
                             <SheetClose />
                         </SheetHeader>
                         <div className="p-4 space-y-4">
-                            <div className="text-lg font-bold text-gray-700">Name: {selectedUser?.name}</div>
+                            <div className="text-lg font-bold text-gray-700">Name: {selectedUser?.username}</div>
                             <div className="text-md text-gray-600">Email: {selectedUser?.email}</div>
                             {/* Add more user details here as necessary */}
                             <div className="text-sm text-gray-500">

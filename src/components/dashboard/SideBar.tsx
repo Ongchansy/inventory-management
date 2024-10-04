@@ -7,13 +7,13 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import useUi from '@/hook/useUI'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import useUiStore from '@/store/uiStore'
 
 const SideBar = () => {
-    const { toggle } = useUi()
+    const { toggle } = useUiStore()
     const [active, setActive] = useState<string | null>(null)
     const [openMenus, setOpenMenus] = useState<string[]>([]) // Track multiple open menus
 

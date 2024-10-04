@@ -9,7 +9,7 @@ interface UserStore {
     isViewSheetOpen: boolean;
     toggleViewSheet: () => void; // Function to toggle the view sheet
     fetchUsers: () => Promise<void>;
-    selectUser: (user: User, mode: 'view' | 'edit') => void; // Update selectUser signature
+    selectUser: (user: User, mode: 'view' | 'edit' | null) => void; // Update selectUser signature
     closeViewSheet: () => void;
     createUser: (newUser: User) => Promise<void>;
     updateUser: (updatedUser: User, id: string) => Promise<void>;
@@ -30,7 +30,7 @@ export const UseUserStore = create<UserStore>((set) => ({
         set({ users: data });
     },
 
-    selectUser: (user: User, mode: 'view' | 'edit') => set({ selectedUser: user, mode, isViewSheetOpen: true }), // Set mode and open sheet
+    selectUser: (user: User, mode: 'view' | 'edit' | null) => set({ selectedUser: user, mode, isViewSheetOpen: true }), // Set mode and open sheet
 
     closeViewSheet: () => set({ isViewSheetOpen: false, selectedUser: null, mode: null }), // Reset selectedUser and mode on close
 
