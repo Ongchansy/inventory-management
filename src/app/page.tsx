@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
@@ -13,7 +13,7 @@ export default function Home() {
       router.push("/auth"); // Redirect to the auth route
     }
     if(isAuthenticated){
-      router.push("inventory-management/home/dashboard")
+      redirect("/inventory-management/home/dashboard")
     }
   }, [router]);
 

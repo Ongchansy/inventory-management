@@ -84,28 +84,6 @@ const UserTable = () => {
                     </tbody>
                 </table>
             </div>
-
-            {/* ShadCN Sheet for Viewing User */}
-            {isViewSheetOpen && (
-                <Sheet open={isViewSheetOpen} onOpenChange={closeViewSheet}>
-                    <SheetContent>
-                        <SheetHeader>
-                            <SheetTitle>View User Details</SheetTitle>
-                            <SheetClose />
-                        </SheetHeader>
-                        <div className="p-4 space-y-4">
-                            <div className="text-lg font-bold text-gray-700">Name: {selectedUser?.username}</div>
-                            <div className="text-md text-gray-600">Email: {selectedUser?.email}</div>
-                            {/* Add more user details here as necessary */}
-                            <div className="text-sm text-gray-500">
-                                {/* Example additional details */}
-                                {/* Role: {selectedUser?.role} */}
-                                {/* Joined: {new Date(selectedUser?.createdAt).toLocaleDateString()} */}
-                            </div>
-                        </div>
-                    </SheetContent>
-                </Sheet>
-            )}
         </>
     );
 };
