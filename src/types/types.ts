@@ -8,5 +8,5 @@ export interface User {
 
 export interface Product {
     id: string,
-
+    name: string,
 }
