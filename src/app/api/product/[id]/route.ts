@@ -48,7 +48,6 @@ export const PUT = async (req: NextRequest) => {
                 description,
                 price,
                 image,
-                images,
                 quantity,
                 categoryId,
                 supplierId,
