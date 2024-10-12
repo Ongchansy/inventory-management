@@ -4,22 +4,22 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
 model User {
-  id          String      @id @default(uuid())
-  profilePic  String?
-  username    String   @unique
-  email       String   @unique
-  password    String   // Make sure to hash this before saving
-  role        UserRole @default(USER)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(uuid())
+  profilePic String?
+  username   String   @unique
+  email      String   @unique
+  password   String // Make sure to hash this before saving
+  role       UserRole @default(USER)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  products    Product[]
+  products              Product[]
   inventoryTransactions InventoryTransaction[]
 }
 
@@ -29,14 +29,14 @@ enum UserRole {
 }
 
 model Category {
-  id          String     @id @default(uuid())
-  name        String   @unique
+  id          String    @id @default(uuid())
+  name        String    @unique
   description String?
   products    Product[]
 }
 
 model Supplier {
-  id          String      @id @default(uuid())
+  id          String    @id @default(uuid())
   name        String
   image       String?
   contactInfo String?
@@ -44,33 +44,32 @@ model Supplier {
 }
 
 model Product {
-  id          String      @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String
   description String?
   price       Float
   image       String?
-  images      String[]
-  quantity    Int      @default(0)
-  categoryId  String
+  quantity    Int     @default(0)
+  categoryId  String?
   supplierId  String?
   userId      String?
 
-  category    Category @relation(fields: [categoryId], references: [id])
-  supplier    Supplier? @relation(fields: [supplierId], references: [id])
-  user        User?     @relation(fields: [userId], references: [id])
+  category              Category?              @relation(fields: [categoryId], references: [id])
+  supplier              Supplier?              @relation(fields: [supplierId], references: [id])
+  user                  User?                  @relation(fields: [userId], references: [id])
   inventoryTransactions InventoryTransaction[]
 }
 
 model InventoryTransaction {
-  id          String      @id @default(uuid())
-  productId   String?
-  userId      String?
-  quantity    Int
+  id              String          @id @default(uuid())
+  productId       String?
+  userId          String?
+  quantity        Int
   transactionType TransactionType
-  createdAt   DateTime @default(now())
+  createdAt       DateTime        @default(now())
 
-  product     Product?   @relation(fields: [productId], references: [id])
-  user        User?      @relation(fields: [userId], references: [id])
+  product Product? @relation(fields: [productId], references: [id])
+  user    User?    @relation(fields: [userId], references: [id])
 }
 
 enum TransactionType {
