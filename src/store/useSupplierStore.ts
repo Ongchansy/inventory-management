@@ -16,7 +16,7 @@ interface SupplierStore {
     deleteSupplier: (supplierId: string) => Promise<void>;
 }
 
-export const useSupplierStore = create<SupplierStore>((set) => ({
+export const UseSupplierStore = create<SupplierStore>((set) => ({
     suppliers: [],
     selectedSupplier: null,
     mode: null, // Initialize mode
@@ -90,7 +90,7 @@ export const useSupplierStore = create<SupplierStore>((set) => ({
                             icon: 'success',
                         });
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         Swal.fire({
                             title: 'Error',
                             text: 'Failed to update supplier.',
@@ -124,7 +124,7 @@ export const useSupplierStore = create<SupplierStore>((set) => ({
                             icon: 'success',
                         });
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         Swal.fire({
                             title: 'Error',
                             text: 'Failed to delete supplier.',

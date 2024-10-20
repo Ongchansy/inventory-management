@@ -4,11 +4,11 @@ import { Product, User } from '@/types/types';
 import { DataTable } from '../../../../components/dashboard/DataTable';
 import { productColumns } from './column';
 import ProductSheet from '../(components)/ProductSheet';
-import { useProductStore } from '@/store/useProductStore';
+import { UseProductStore } from '@/store/useProductStore';
 
 
 const ProductTable = () => {
-    const { products, fetchProducts, selectProduct} = useProductStore()
+    const { products, fetchProducts, selectProduct} = UseProductStore()
 
     useEffect(() => {
         fetchProducts();

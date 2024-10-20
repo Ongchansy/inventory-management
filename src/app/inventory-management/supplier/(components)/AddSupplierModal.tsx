@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useModal from "@/store/useModal";
-import { useSupplierStore } from "@/store/useSupplierStore";
+import { UseSupplierStore} from "@/store/useSupplierStore";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -24,7 +24,7 @@ export interface Supplier {
 
 export function AddSupplierModal() {
   const { modals, toggleModal, closeModal } = useModal();
-  const { createSupplier, fetchSuppliers } = useSupplierStore();
+  const { createSupplier, fetchSuppliers } = UseSupplierStore();
 
   useEffect(() => {
     fetchSuppliers();

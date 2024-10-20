@@ -13,17 +13,17 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseCategoryStore } from "@/store/useCategoryStore";
 import useModal from "@/store/useModal";
-import { useProductStore } from "@/store/useProductStore";
-import { useSupplierStore } from "@/store/useSupplierStore";
+import { UseProductStore} from "@/store/useProductStore";
+import { UseSupplierStore} from "@/store/useSupplierStore";
 import { UseUserStore } from "@/store/useTransactionStore";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 export function AddProductModal() {
   const { modals, toggleModal, closeModal } = useModal();
-  const { createProduct } = useProductStore();
+  const { createProduct } = UseProductStore();
   const {categories, fetchCategories} = UseCategoryStore()
-  const {suppliers, fetchSuppliers} = useSupplierStore()
+  const {suppliers, fetchSuppliers} = UseSupplierStore()
   const {users, fetchUsers} = UseUserStore()
   
 

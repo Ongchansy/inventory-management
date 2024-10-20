@@ -3,12 +3,12 @@ import React, { useEffect } from 'react';
 import { Supplier } from '@/types/types';
 import { DataTable } from '../../../../components/dashboard/DataTable';
 import { SupplierColumns } from './column';
-import { useSupplierStore } from '@/store/useSupplierStore';
 import SupplierSheet from '../(components)/SupplierSheet';
+import { UseSupplierStore } from '@/store/useSupplierStore';
 
 
 const SupplierTable = () => {
-    const { suppliers, fetchSuppliers, selectSupplier} = useSupplierStore()
+    const { suppliers, fetchSuppliers, selectSupplier} = UseSupplierStore()
 
     useEffect(() => {
         fetchSuppliers();

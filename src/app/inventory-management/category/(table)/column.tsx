@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from '@/components/ui/checkbox';
-import { useProductStore } from '@/store/useProductStore';
 import { UseCategoryStore } from '@/store/useCategoryStore';
 
 export const categoryColumns: ColumnDef<Category>[] = [

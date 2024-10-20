@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from '@/components/ui/checkbox';
-import { useProductStore } from '@/store/useProductStore';
+import Image from 'next/image';
+import { UseProductStore } from '@/store/useProductStore';
 
 export const productColumns: ColumnDef<Product>[] = [
     {
@@ -49,9 +50,12 @@ export const productColumns: ColumnDef<Product>[] = [
         cell: ({ row }) => {
             const item = row.original;
             return (
-                <img
+                <Image
                     src={item.image}
                     alt={item.name}
+                    width={48}
+                    height={48}
+                    loading="lazy"
                     className="w-12 h-12 object-cover"
                 />
             );
@@ -66,7 +70,7 @@ export const productColumns: ColumnDef<Product>[] = [
         header: 'Actions',
         cell: ({ row }) => {
         const item = row.original;
-        const { selectProduct , deleteProduct, toggleViewSheet } = useProductStore();
+        const { selectProduct , deleteProduct, toggleViewSheet } = UseProductStore();
 
         return (
             <DropdownMenu>

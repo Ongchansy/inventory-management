@@ -7,8 +7,8 @@ type Props = {
     placeholder?: string;
     value?: string | number;
     name?: string;
-    register?: any;
-    errors?: any;
+    register?: any
+    errors?: string | undefined;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     className?: string;
     error?: string;

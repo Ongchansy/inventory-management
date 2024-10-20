@@ -2,11 +2,12 @@ import React from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Supplier } from '@/types/types';
 import { useForm } from 'react-hook-form';
-import { useSupplierStore } from '@/store/useSupplierStore';
+import { UseSupplierStore } from '@/store/useSupplierStore';
 import InputForm from '@/components/form/InputForm';
+import Image from 'next/image';
 
 const SupplierSheet: React.FC = () => {
-    const { isViewSheetOpen, selectedSupplier, mode, closeViewSheet, updateSupplier, toggleViewSheet } = useSupplierStore();
+    const { isViewSheetOpen, selectedSupplier, mode, closeViewSheet, updateSupplier, toggleViewSheet } = UseSupplierStore();
 
     const { register, handleSubmit, reset, control, formState: { errors } } = useForm<Supplier>({
         defaultValues: {
@@ -40,7 +41,7 @@ const SupplierSheet: React.FC = () => {
                             </p>
                             <div>
                                 <strong className="mb-4">Image</strong>
-                                <img src={selectedSupplier?.image} className="w-24 h-24" alt="" />
+                                {selectedSupplier?.image && <Image src={selectedSupplier.image} className="w-24 h-24" alt="" />}
                             </div>
                             <p className="text-gray-700">
                                 <strong>Contact Info:</strong> {selectedSupplier?.contactInfo}

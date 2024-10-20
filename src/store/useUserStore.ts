@@ -90,7 +90,7 @@ export const UseUserStore = create<UserStore>((set) => ({
                             icon: 'success',
                         });
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         Swal.fire({
                             title: 'Error',
                             text: 'Failed to update user.',
@@ -124,7 +124,7 @@ export const UseUserStore = create<UserStore>((set) => ({
                             icon: 'success',
                         });
                     })
-                    .catch((error) => {
+                    .catch(() => {
                         Swal.fire({
                             title: 'Error',
                             text: 'Failed to delete user.',

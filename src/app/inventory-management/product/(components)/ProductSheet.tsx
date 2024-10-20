@@ -4,17 +4,18 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/comp
 import { Product } from '@/types/types';
 import { Controller, useForm } from 'react-hook-form';
 import InputForm from '@/components/form/InputForm';
-import { useProductStore } from '@/store/useProductStore';
+import { UseProductStore } from '@/store/useProductStore';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { UseCategoryStore } from '@/store/useCategoryStore';
-import { useSupplierStore } from '@/store/useSupplierStore';
+import { UseSupplierStore } from '@/store/useSupplierStore';
 import { UseUserStore } from '@/store/useTransactionStore';
+import Image from 'next/image';
 
 const ProductSheet: React.FC = () => {
-    const { isViewSheetOpen, selectedProduct, mode, closeViewSheet, updateProduct, toggleViewSheet } = useProductStore();
-    const {categories, fetchCategories} = UseCategoryStore()
-  const {suppliers, fetchSuppliers} = useSupplierStore()
+    const { isViewSheetOpen, selectedProduct, mode, closeViewSheet, updateProduct, toggleViewSheet } = UseProductStore();
+    const {categories, fetchCategories, selectCategory} = UseCategoryStore()
+  const {suppliers, fetchSuppliers} = UseSupplierStore()
   const {users, fetchUsers} = UseUserStore()
 
     const { register, handleSubmit, reset, control, formState: { errors } } = useForm<Product>({
@@ -39,9 +40,6 @@ const ProductSheet: React.FC = () => {
         closeViewSheet();
     };
 
-    
-  
-
   useEffect(() => {
     fetchCategories();
     fetchSuppliers();
@@ -63,7 +61,19 @@ const ProductSheet: React.FC = () => {
                             </p>
                             <div>
                                 <strong className="mb-4">Image</strong>
-                                <img src={selectedProduct?.image} className="w-24 h-24" alt="" />
+                                {
+                                    selectedProduct?.image ? (
+                                        <Image 
+                                        src={selectedProduct?.image}
+                                        alt={selectedProduct?.name}
+                                        height={200}
+                                        width={200}
+                                        loading='lazy'
+                                         />
+                                    ) : (
+                                        <p className="text-gray-700">No Image</p>
+                                    )
+                                }
                             </div>
                             <p className="text-gray-700">
                                 <strong>Price:</strong> ${selectedProduct?.price}
@@ -82,6 +92,7 @@ const ProductSheet: React.FC = () => {
                                     name="name"
                                     placeholder="Enter Product Name"
                                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+                                    defaultValue={selectedProduct?.name}
                                 />
                             </div>
                             <div className="mb-4">
@@ -92,6 +103,7 @@ const ProductSheet: React.FC = () => {
                                     name="price"
                                     placeholder="Enter Price"
                                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+                                    defaultValue={selectedProduct?.price.toLocaleString()}
                                 />
                             </div>
                             <div className="mb-4">
@@ -102,6 +114,7 @@ const ProductSheet: React.FC = () => {
                                     name="quantity"
                                     placeholder="Enter Quantity"
                                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+                                    defaultValue={selectedProduct?.quantity.toLocaleString()}
                                 />
                             </div>
                             <div className="mb-4">
@@ -112,6 +125,7 @@ const ProductSheet: React.FC = () => {
                                     name="description"
                                     placeholder="Enter Description"
                                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+                                    defaultValue={selectedProduct?.description}
                                 />
                             </div>
                             <div className="mb-4">
@@ -122,6 +136,7 @@ const ProductSheet: React.FC = () => {
                                     name="image"
                                     placeholder="Enter Image URL"
                                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+                                    defaultValue={selectedProduct?.image}
                                 />
                             </div>
 
@@ -139,11 +154,11 @@ const ProductSheet: React.FC = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                        {categories.map((category) => (
-                                            <SelectItem key={category.id} value={category.id}>
-                                                {category.name}
-                                            </SelectItem>
-                                        ))}
+                                            {categories.map((category) => (
+                                                <SelectItem key={category.id} defaultValue={category.name} value={category.id} className="capitalize">
+                                                    {category.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectGroup>
                                     </SelectContent>
                                     </Select>

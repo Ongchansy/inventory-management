@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from '@/components/ui/checkbox';
-import { useSupplierStore } from '@/store/useSupplierStore';
+import { UseSupplierStore } from '@/store/useSupplierStore';
+import Image from 'next/image';
 
 export const SupplierColumns: ColumnDef<Supplier>[] = [
     {
@@ -45,9 +46,11 @@ export const SupplierColumns: ColumnDef<Supplier>[] = [
         cell: ({ row }) => {
             const item = row.original;
             return (
-                <img
+                <Image
                     src={item.image}
                     alt={item.name}
+                    width={32}
+                    height={32}
                     className="w-12 h-12 object-cover"
                 />
             );
@@ -58,7 +61,7 @@ export const SupplierColumns: ColumnDef<Supplier>[] = [
         header: 'Actions',
         cell: ({ row }) => {
         const item = row.original;
-        const { selectSupplier , deleteSupplier, toggleViewSheet } = useSupplierStore();
+        const { selectSupplier , deleteSupplier, toggleViewSheet } = UseSupplierStore();
 
         return (
             <DropdownMenu>

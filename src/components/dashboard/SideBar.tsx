@@ -12,6 +12,12 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import useUiStore from '@/store/uiStore'
 
+type MenuItem = {
+    icon: React.ElementType,
+    label: string,
+    subItems: { label: string, icon: React.ElementType }[]
+}
+
 const SideBar = () => {
     const { toggle } = useUiStore()
     const [active, setActive] = useState<string | null>(null)
@@ -32,7 +38,7 @@ const SideBar = () => {
     }
 
     // Icons for sub-items added
-    const menuItems = [
+    const menuItems: MenuItem[] = [
         {
             icon: Package,
             label: 'Inventory',
@@ -80,7 +86,7 @@ const SideBar = () => {
         },
     ]
 
-    const renderMenuItem = (item: any) => (
+    const renderMenuItem = (item: MenuItem) => (
         <Collapsible key={item.label} open={openMenus.includes(item.label)}>
             <CollapsibleTrigger
                 className={`flex w-full items-center justify-between py-2 px-4 hover:bg-white hover:text-black transition-colors ${
@@ -96,7 +102,7 @@ const SideBar = () => {
             </CollapsibleTrigger>
             <CollapsibleContent>
                 <div className="pl-8">
-                    {item.subItems.map((subItem: any) => (
+                    {item.subItems.map(subItem => (
                         <TooltipProvider key={subItem.label}>
                             <Tooltip>
                                 <TooltipTrigger asChild>
@@ -157,3 +163,4 @@ const SideBar = () => {
 }
 
 export default SideBar
+
