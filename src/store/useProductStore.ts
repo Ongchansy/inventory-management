@@ -1,138 +1,147 @@
 import { create } from 'zustand';
 import Swal from 'sweetalert2';
-import { User } from '@/types/types';
+import { Product, User } from '@/types/types';
 
 interface UserStore {
-    users: User[];
-    selectedUser: User | null;
+    products: Product[]
+    selectedProduct: Product | null;
     mode: 'view' | 'edit' | null; // Add mode property
     isViewSheetOpen: boolean;
     toggleViewSheet: () => void; // Function to toggle the view sheet
-    fetchUsers: () => Promise<void>;
-    selectUser: (user: User, mode: 'view' | 'edit') => void; // Update selectUser signature
+    fetchProducts: () => Promise<void>;
+    selectProduct: (product: Product, mode: 'view' | 'edit' | null) => void; // Update selectUser signature
     closeViewSheet: () => void;
-    createUser: (newUser: User) => Promise<void>;
-    updateUser: (updatedUser: User, id: string) => Promise<void>;
-    deleteUser: (userId: string) => Promise<void>;
+    createProduct: (newProduct: Product) => Promise<void>;
+    updateProduct: (updateProduct: Product, id: string) => Promise<void>;
+    deleteProduct: (productId: string) => Promise<void>;
 }
 
-export const UseUserStore = create<UserStore>((set) => ({
-    users: [],
-    selectedUser: null,
+export const useProductStore = create<UserStore>((set) => ({
+    products: [],
+    selectedProduct: null,
     mode: null, // Initialize mode
     isViewSheetOpen: false,
-
-    toggleViewSheet: () => set((state) => ({ isViewSheetOpen: !state.isViewSheetOpen })), // Toggle the view sheet
-
-    fetchUsers: async () => {
-        const response = await fetch('/api/users');
-        const data: User[] = await response.json();
-        set({ users: data });
+    toggleViewSheet: () => set((state) => ({ isViewSheetOpen: !state.isViewSheetOpen })),
+    fetchProducts: async () => {
+        const response = await fetch('/api/products');
+        const data: Product[] = await response.json();
+        set({ products: data });
     },
 
-    selectUser: (user: User, mode: 'view' | 'edit') => set({ selectedUser: user, mode, isViewSheetOpen: true }), // Set mode and open sheet
+    selectProduct: (product: Product, mode: 'view' | 'edit' | null) => set({ selectedProduct: product, mode }),
 
-    closeViewSheet: () => set({ isViewSheetOpen: false, selectedUser: null, mode: null }), // Reset selectedUser and mode on close
-
-    createUser: async (newUser: User) => {
-        const response = await fetch('/api/users', {
+    closeViewSheet: () => set({ isViewSheetOpen: false }),
+    createProduct: async (newProduct: Product) => {
+        const response = await fetch('/api/products', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(newUser),
+            body: JSON.stringify(newProduct),
         });
 
         if (response.ok) {
-            const createdUser:User = await response.json();
+            const createdProduct: Product = await response.json();
             set((state) => ({
-                users: [...state.users, createdUser],
+                products: [...state.products, createdProduct],
             }));
             Swal.fire({
-                title: 'User created!',
-                text: `User ${createdUser?.username} has been created.`,
+                title: 'Product created!',
+                text: `Product ${createdProduct.name} has been created.`,
                 icon: 'success',
             });
         } else {
             Swal.fire({
                 title: 'Error',
-                text: 'Failed to create user.',
+                text: 'Failed to create product.',
                 icon: 'error',
             });
         }
     },
+    updateProduct: async (updateProduct: Product, id: string) => {
+    Swal.fire({
+        title: 'Update product',
+        text: 'Are you sure you want to update this product?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Update',
+        cancelButtonText: 'Cancel',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Convert price and quantity to numbers
+            const updatedData = {
+                ...updateProduct,
+                price: parseFloat(updateProduct.price.toString()),  // Ensure price is a float
+                quantity: parseInt(updateProduct.quantity.toString()),  // Ensure quantity is an integer
+                // If image is an object, make sure to handle it appropriately
+            };
 
-    updateUser: async (updatedUser: User, id: string) => {
-        Swal.fire({
-            title: 'Update user',
-            text: 'Are you sure you want to update this user?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Update',
-            cancelButtonText: 'Cancel',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/api/users/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(updatedUser),
+            fetch(`/api/products/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData), // Send updated data
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update product');
+                    }
+                    return response.json();
                 })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        set((state) => ({
-                            users: state.users.map((user) => (user.id === id ? data : user)),
-                        }));
-                        Swal.fire({
-                            title: 'User updated!',
-                            text: `User ${data.name} has been updated.`,
-                            icon: 'success',
-                        });
-                    })
-                    .catch((error) => {
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Failed to update user.',
-                            icon: 'error',
-                        });
+                .then((data) => {
+                    set((state) => ({
+                        products: state.products.map((product) => (product.id === id ? data : product)),
+                    }));
+                    Swal.fire({
+                        title: 'Product updated!',
+                        text: `Product ${data.name} has been updated.`,
+                        icon: 'success',
                     });
-            }
-        })
-    },
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Failed to update product.',
+                        icon: 'error',
+                    });
+                });
+        }
+    });
+},
 
-    deleteUser: async (userId: string) => {
+    deleteProduct: async (productId: string) => {
         Swal.fire({
-            title: 'Delete user',
-            text: 'Are you sure you want to delete this user?',
+            title: 'Delete product',
+            text: 'Are you sure you want to delete this product?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Delete',
             cancelButtonText: 'Cancel',
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/api/users/${userId}`, {
+                fetch(`/api/products/${productId}`, {
                     method: 'DELETE',
                 })
                     .then(() => {
                         set((state) => ({
-                            users: state.users.filter((user) => user.id !== userId),
+                            products: state.products.filter((product) => product.id !== productId),
                         }));
                         Swal.fire({
-                            title: 'User deleted!',
-                            text: `User has been deleted.`,
+                            title: 'Product deleted!',
+                            text: `Product has been deleted.`,
                             icon: 'success',
                         });
                     })
                     .catch((error) => {
                         Swal.fire({
                             title: 'Error',
-                            text: 'Failed to delete user.',
+                            text: 'Failed to delete product.',
                             icon: 'error',
                         });
                     });
             }
-        })
+        });
     },
 }));
 

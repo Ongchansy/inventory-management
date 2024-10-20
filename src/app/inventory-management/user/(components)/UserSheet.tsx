@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Label } from '@/components/ui/label';
 
 const UserSheet: React.FC = () => {
-    const { isViewSheetOpen, selectedUser, mode, closeViewSheet, updateUser } = UseUserStore();
+    const { isViewSheetOpen, selectedUser, mode, closeViewSheet, updateUser,toggleViewSheet } = UseUserStore();
 
     // Initialize the form with default values based on the selected user
     const { register, handleSubmit, reset, control, formState: { errors } } = useForm<User>({
@@ -30,12 +30,10 @@ const UserSheet: React.FC = () => {
         updateUser(data, id); // Update the user in the store
         reset(); // Reset form fields after submission
         closeViewSheet(); // Close sheet after update
-        console.log(data);
-        
     };
 
     return (
-        <Sheet open={isViewSheetOpen} onOpenChange={closeViewSheet}>
+        <Sheet open={isViewSheetOpen} onOpenChange={toggleViewSheet}>
             <SheetContent>
                 <SheetHeader>
                     <SheetTitle>{mode === 'edit' ? 'Edit User' : 'View User Details'}</SheetTitle>
@@ -80,7 +78,7 @@ const UserSheet: React.FC = () => {
                             </div>
                             <div>
                                 <InputForm
-                                    type="password"
+                                    type="text"
                                     register={register}
                                     label="Password"
                                     name="password"

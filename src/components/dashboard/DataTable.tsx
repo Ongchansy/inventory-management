@@ -35,17 +35,18 @@ import {
 export interface DataTableProps<RowData> {
   columns: ColumnDef<RowData>[];
   data: RowData[];
+  filterColumn: string; // Add this prop to make it flexible
 }
 
 export function DataTable<RowData>({
   columns,
   data,
+  filterColumn,
 }: DataTableProps<RowData>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  
 
   const table = useReactTable({
     data,
@@ -70,10 +71,10 @@ export function DataTable<RowData>({
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder={`Filter ${filterColumn}...`} // Make the placeholder dynamic
+          value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ""} // Dynamically get the filter value for the passed filterColumn
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn(filterColumn)?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

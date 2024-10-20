@@ -13,10 +13,10 @@ import { Label } from "@/components/ui/label"
 import useModal from "@/store/useModal";
 import { UseUserStore } from "@/store/useUserStore"
 import { Controller, useForm } from "react-hook-form"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select"
 
 export function AddUserModal() {
-  const { isModalOpen, toggleModal, closeModal } = useModal();
+  const { modals, toggleModal, closeModal } = useModal();
   const { createUser } = UseUserStore();
 
   const {
@@ -36,12 +36,12 @@ export function AddUserModal() {
 
   const onSubmit = async (data:any) => {
     await createUser(data);
+    closeModal("user");
     reset();
-    closeModal();
   };
 
   return (
-    <Dialog open={isModalOpen} onOpenChange={toggleModal}>
+    <Dialog open={modals.user} onOpenChange={(open) => toggleModal("user")}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add User</DialogTitle>

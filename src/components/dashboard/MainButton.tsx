@@ -2,16 +2,21 @@
 import {Button} from "@/components/ui/button";
 import useModal from "@/store/useModal";
 
-const MainButton = () => {
-    const {toggleModal} = useModal()
+interface Props {
+    title: string
+    toggle: () => void
+}
+
+const MainButton: React.FC<Props> = ({title, toggle}) => {
+    
     return (
         <div>
             <Button
                 variant='default'
                 size='default'
-                onClick={toggleModal}
+                onClick={toggle}
             >
-                Add User
+                {title}
             </Button>
         </div>
     )

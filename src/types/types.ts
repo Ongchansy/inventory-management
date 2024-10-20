@@ -1,3 +1,5 @@
+
+
 export interface User {
     id : string,
     username : string,
@@ -7,6 +9,26 @@ export interface User {
 }
 
 export interface Product {
-    id: string,
-    name: string,
+    id          :string  
+    name        :string
+    description :string
+    price      : number
+    image       :string
+    quantity    :number
+    categoryId  :string
+    supplierId  :string
+    userId     :string   
+}
+
+export interface Category {
+    id          :string
+    name        :string
+    description :string
+}
+
+export interface Supplier {
+    id          :string
+    name          :string        
+    image          :string
+    contactInfo          :string
 }

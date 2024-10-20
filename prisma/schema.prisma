@@ -32,7 +32,7 @@ model Category {
   id          String    @id @default(uuid())
   name        String    @unique
   description String?
-  products    Product[]
+  products    Product[] 
 }
 
 model Supplier {

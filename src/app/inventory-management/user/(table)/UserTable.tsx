@@ -7,7 +7,7 @@ import { User } from '@/types/types';
 import { DataTable } from '../../../../components/dashboard/DataTable';
 
 const UserTable = () => {
-    const { users, fetchUsers, selectUser, selectedUser, isViewSheetOpen, closeViewSheet } = UseUserStore()
+    const { users, fetchUsers, selectUser } = UseUserStore()
 
     useEffect(() => {
         fetchUsers();
@@ -22,7 +22,7 @@ const UserTable = () => {
     return (
         <>
             {/* Pass columns and data as props */}
-            <DataTable<User> data={userData} columns={userColumns} />
+            <DataTable<User> data={userData} columns={userColumns} filterColumn="email" />
 
             {/* ShadCN Sheet for Viewing User */}
             <UserSheet />

@@ -86,7 +86,7 @@ export const UseUserStore = create<UserStore>((set) => ({
                         }));
                         Swal.fire({
                             title: 'User updated!',
-                            text: `User ${data.name} has been updated.`,
+                            text: `User has been updated.`,
                             icon: 'success',
                         });
                     })

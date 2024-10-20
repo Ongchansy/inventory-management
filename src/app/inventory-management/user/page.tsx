@@ -1,6 +1,7 @@
+
 import UserTable from "@/app/inventory-management/user/(table)/UserTable";
-import MainButton from "@/components/dashboard/MainButton";
-import { AddUserModal } from "@/components/dashboard/MainDailog";
+import { AddUserModal } from "@/app/inventory-management/user/(components)/AddUserModal";
+import UserButtonClient from "./(components)/UserButtonClient";
 
 
 
@@ -9,7 +10,7 @@ const UserPage = () => {
       <div>
         <div className='flex justify-between items-center my-4'>
             <h2 className='md:text-4xl text-2xl font-bold'>User</h2>
-            <MainButton  />
+            <UserButtonClient title="Add User" />
         </div>
         <UserTable />
         <AddUserModal />

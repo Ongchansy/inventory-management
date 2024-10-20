@@ -1,17 +1,48 @@
-import {create} from 'zustand'
+import { create } from 'zustand';
 
 interface ModalState {
-    isModalOpen: boolean
-    toggleModal: () => void
-    closeModal: () => void
-    openModal: () => void
+    modals: {
+        user: boolean;
+        product: boolean;
+        category: boolean;
+        supplier: boolean;
+    };
+    toggleModal: (modalType: 'user' | 'product' | "category" | "supplier"
+    ) => void;
+    closeModal: (modalType: 'user' | 'product' | "category" | "supplier"
+    ) => void;
+    openModal: (modalType: 'user' | 'product' | "category" | "supplier"
+    ) => void;
 }
 
 const useModal = create<ModalState>((set) => ({
-    isModalOpen: false,
-    toggleModal: () => set((state) => ({ isModalOpen: !state.isModalOpen })),
-    closeModal: () => set({ isModalOpen: false }),
-    openModal: () => set({ isModalOpen: true }),
-}))
+    modals: {
+        user: false,
+        product: false,
+        category: false,
+        supplier: false,
+    },
+
+    toggleModal: (modalType) => set((state) => ({
+        modals: {
+            ...state.modals,
+            [modalType]: !state.modals[modalType],
+        },
+    })),
+
+    closeModal: (modalType) => set((state) => ({
+        modals: {
+            ...state.modals,
+            [modalType]: false,
+        },
+    })),
+
+    openModal: (modalType) => set((state) => ({
+        modals: {
+            ...state.modals,
+            [modalType]: true,
+        },
+    })),
+}));
 
 export default useModal;

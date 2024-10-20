@@ -1,99 +1,99 @@
 import { create } from 'zustand';
 import Swal from 'sweetalert2';
-import { User } from '@/types/types';
+import { Supplier } from '@/types/types';
 
-interface UserStore {
-    users: User[];
-    selectedUser: User | null;
+interface SupplierStore {
+    suppliers: Supplier[];
+    selectedSupplier: Supplier | null;
     mode: 'view' | 'edit' | null; // Add mode property
     isViewSheetOpen: boolean;
     toggleViewSheet: () => void; // Function to toggle the view sheet
-    fetchUsers: () => Promise<void>;
-    selectUser: (user: User, mode: 'view' | 'edit') => void; // Update selectUser signature
+    fetchSuppliers: () => Promise<void>;
+    selectSupplier: (supplier: Supplier, mode: 'view' | 'edit') => void; // Update selectSupplier signature
     closeViewSheet: () => void;
-    createUser: (newUser: User) => Promise<void>;
-    updateUser: (updatedUser: User, id: string) => Promise<void>;
-    deleteUser: (userId: string) => Promise<void>;
+    createSupplier: (newSupplier: Supplier) => Promise<void>;
+    updateSupplier: (updatedSupplier: Supplier, id: string) => Promise<void>;
+    deleteSupplier: (supplierId: string) => Promise<void>;
 }
 
-export const UseUserStore = create<UserStore>((set) => ({
-    users: [],
-    selectedUser: null,
+export const useSupplierStore = create<SupplierStore>((set) => ({
+    suppliers: [],
+    selectedSupplier: null,
     mode: null, // Initialize mode
     isViewSheetOpen: false,
 
     toggleViewSheet: () => set((state) => ({ isViewSheetOpen: !state.isViewSheetOpen })), // Toggle the view sheet
 
-    fetchUsers: async () => {
-        const response = await fetch('/api/users');
-        const data: User[] = await response.json();
-        set({ users: data });
+    fetchSuppliers: async () => {
+        const response = await fetch('/api/suppliers');
+        const data: Supplier[] = await response.json();
+        set({ suppliers: data });
     },
 
-    selectUser: (user: User, mode: 'view' | 'edit') => set({ selectedUser: user, mode, isViewSheetOpen: true }), // Set mode and open sheet
+    selectSupplier: (supplier: Supplier, mode: 'view' | 'edit') => set({ selectedSupplier: supplier, mode, isViewSheetOpen: true }), // Set mode and open sheet
 
-    closeViewSheet: () => set({ isViewSheetOpen: false, selectedUser: null, mode: null }), // Reset selectedUser and mode on close
+    closeViewSheet: () => set({ isViewSheetOpen: false, selectedSupplier: null, mode: null }), // Reset selectedSupplier and mode on close
 
-    createUser: async (newUser: User) => {
-        const response = await fetch('/api/users', {
+    createSupplier: async (newSupplier: Supplier) => {
+        const response = await fetch('/api/suppliers', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(newUser),
+            body: JSON.stringify(newSupplier),
         });
 
         if (response.ok) {
-            const createdUser:User = await response.json();
+            const createdSupplier: Supplier = await response.json();
             set((state) => ({
-                users: [...state.users, createdUser],
+                suppliers: [...state.suppliers, createdSupplier],
             }));
             Swal.fire({
-                title: 'User created!',
-                text: `User ${createdUser?.username} has been created.`,
+                title: 'Supplier created!',
+                text: `Supplier ${createdSupplier?.name} has been created.`,
                 icon: 'success',
             });
         } else {
             Swal.fire({
                 title: 'Error',
-                text: 'Failed to create user.',
+                text: 'Failed to create supplier.',
                 icon: 'error',
             });
         }
     },
 
-    updateUser: async (updatedUser: User, id: string) => {
+    updateSupplier: async (updatedSupplier: Supplier, id: string) => {
         Swal.fire({
-            title: 'Update user',
-            text: 'Are you sure you want to update this user?',
+            title: 'Update supplier',
+            text: 'Are you sure you want to update this supplier?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Update',
             cancelButtonText: 'Cancel',
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/api/users/${id}`, {
+                fetch(`/api/suppliers/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(updatedUser),
+                    body: JSON.stringify(updatedSupplier),
                 })
                     .then((response) => response.json())
                     .then((data) => {
                         set((state) => ({
-                            users: state.users.map((user) => (user.id === id ? data : user)),
+                            suppliers: state.suppliers.map((supplier) => (supplier.id === id ? data : supplier)),
                         }));
                         Swal.fire({
-                            title: 'User updated!',
-                            text: `User ${data.name} has been updated.`,
+                            title: 'Supplier updated!',
+                            text: `Supplier ${data.name} has been updated.`,
                             icon: 'success',
                         });
                     })
                     .catch((error) => {
                         Swal.fire({
                             title: 'Error',
-                            text: 'Failed to update user.',
+                            text: 'Failed to update supplier.',
                             icon: 'error',
                         });
                     });
@@ -101,33 +101,33 @@ export const UseUserStore = create<UserStore>((set) => ({
         })
     },
 
-    deleteUser: async (userId: string) => {
+    deleteSupplier: async (supplierId: string) => {
         Swal.fire({
-            title: 'Delete user',
-            text: 'Are you sure you want to delete this user?',
+            title: 'Delete supplier',
+            text: 'Are you sure you want to delete this supplier?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Delete',
             cancelButtonText: 'Cancel',
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/api/users/${userId}`, {
+                fetch(`/api/suppliers/${supplierId}`, {
                     method: 'DELETE',
                 })
                     .then(() => {
                         set((state) => ({
-                            users: state.users.filter((user) => user.id !== userId),
+                            suppliers: state.suppliers.filter((supplier) => supplier.id !== supplierId),
                         }));
                         Swal.fire({
-                            title: 'User deleted!',
-                            text: `User has been deleted.`,
+                            title: 'Supplier deleted!',
+                            text: `Supplier has been deleted.`,
                             icon: 'success',
                         });
                     })
                     .catch((error) => {
                         Swal.fire({
                             title: 'Error',
-                            text: 'Failed to delete user.',
+                            text: 'Failed to delete supplier.',
                             icon: 'error',
                         });
                     });
@@ -135,4 +135,3 @@ export const UseUserStore = create<UserStore>((set) => ({
         })
     },
 }));
-
