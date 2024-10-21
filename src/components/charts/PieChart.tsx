@@ -18,47 +18,59 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { UseProductStore } from "@/store/useProductStore"
+import { UseCategoryStore } from "@/store/useCategoryStore"
+import { UseSupplierStore } from "@/store/useSupplierStore"
+import { UseUserStore } from "@/store/useTransactionStore"
 
 export const description = "A donut chart with text"
 
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 190, fill: "var(--color-other)" },
-]
-
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig
-
 export function PieCharts() {
+  const { products, fetchProducts } = UseProductStore()
+  const { categories, fetchCategories } = UseCategoryStore()
+  const { suppliers, fetchSuppliers } = UseSupplierStore()
+  const { users, fetchUsers } = UseUserStore()
+
+  // Use useMemo to memoize chartData based on dependencies
+  const chartData = React.useMemo(() => [
+    { name: "Users", visitors: users.length, fill: "var(--color-chrome, #ff6384)" },
+    { name: "Products", visitors: products.length, fill: "var(--color-safari, #36a2eb)" },
+    { name: "Suppliers", visitors: suppliers.length, fill: "var(--color-firefox, #ffce56)" },
+    { name: "Categories", visitors: categories.length, fill: "var(--color-edge, #4bc0c0)" },
+  ], [users.length, products.length, suppliers.length, categories.length]) // Dependencies for memoization
+
   const totalVisitors = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
-  }, [])
+  }, [chartData])
+
+  React.useEffect(() => {
+    fetchProducts()
+    fetchCategories()
+    fetchSuppliers()
+    fetchUsers()
+  }, [fetchProducts, fetchCategories, fetchSuppliers, fetchUsers])
+
+  const chartConfig = {
+    users: {
+      label: "Users",
+    },
+    product: {
+      label: "Products",
+      color: "hsl(var(--chart-1))",
+    },
+    suppliers: {
+      label: "Suppliers",
+      color: "hsl(var(--chart-2))",
+    },
+    category: {
+      label: "Categories",
+      color: "hsl(var(--chart-3))",
+    },
+    other: {
+      label: "Other",
+      color: "hsl(var(--chart-5))",
+    },
+  } satisfies ChartConfig
 
   return (
     <Card className="flex flex-col">
@@ -79,7 +91,7 @@ export function PieCharts() {
             <Pie
               data={chartData}
               dataKey="visitors"
-              nameKey="browser"
+              nameKey="name"
               innerRadius={60}
               strokeWidth={5}
             >
@@ -105,7 +117,7 @@ export function PieCharts() {
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          visitors
                         </tspan>
                       </text>
                     )

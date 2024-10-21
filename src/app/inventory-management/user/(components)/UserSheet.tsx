@@ -11,7 +11,7 @@ const UserSheet: React.FC = () => {
     const { isViewSheetOpen, selectedUser, mode, closeViewSheet, updateUser,toggleViewSheet } = UseUserStore();
 
     // Initialize the form with default values based on the selected user
-    const { register, handleSubmit, reset, control, formState: { errors } } = useForm<User>({
+    const { register, handleSubmit, reset,setValue, control, formState: { errors } } = useForm<User>({
         defaultValues: {
             id: selectedUser?.id,
             username: selectedUser?.username,
@@ -24,6 +24,12 @@ const UserSheet: React.FC = () => {
     //extract id from selectedUser
     const id = selectedUser?.id || '';
     
+    // When the form is opened, set the values dynamically
+    if (selectedUser) {
+        setValue('username', selectedUser.username || '');
+        setValue('email', selectedUser.email || '');
+        setValue('role', selectedUser.role || '');
+    }
 
     // Handle form submission for updating the user
     const onSubmit = (data: User) => {

@@ -41,6 +41,9 @@ export const PUT = async (req: NextRequest) => {
         price,
         image,
         quantity,
+        userId,
+        categoryId,
+        supplierId,
     } = await req.json();
     try {
         const updatedProduct = await prisma.product.update({
@@ -52,6 +55,9 @@ export const PUT = async (req: NextRequest) => {
                 price,
                 image,
                 quantity,
+                userId,
+                categoryId,
+                supplierId
             },
         });
         return new Response(JSON.stringify(updatedProduct), { status: 200 });

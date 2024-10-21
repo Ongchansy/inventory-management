@@ -8,7 +8,7 @@ import { UseCategoryStore } from '@/store/useCategoryStore';
 const CategorySheet: React.FC = () => {
     const { isViewSheetOpen, selectedCategory, mode, closeViewSheet, updateCategory, toggleViewSheet } = UseCategoryStore();
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<Category>({
+    const { register, handleSubmit, reset, setValue , formState: { errors } } = useForm<Category>({
         defaultValues: {
             id: selectedCategory?.id,
             name: selectedCategory?.name,
@@ -18,12 +18,19 @@ const CategorySheet: React.FC = () => {
 
     const id = selectedCategory?.id || '';
 
+     // When the form is opened, set the values dynamically
+     if (selectedCategory) {
+        setValue('name', selectedCategory.name || '');
+        setValue('description', selectedCategory.description || '');
+    }
+
+
     const onSubmit = (data: Category) => {
         updateCategory(data, id);
         reset();
         closeViewSheet();
     };
-
+    
     return (
         <Sheet open={isViewSheetOpen} onOpenChange={toggleViewSheet}>
             <SheetContent>

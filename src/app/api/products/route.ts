@@ -45,7 +45,11 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
 export const GET = async (req: NextRequest, res: NextResponse) => {
     try {
-        const products = await prisma.product.findMany()
+        const products = await prisma.product.findMany({
+            orderBy: {
+                name: "asc"
+            },
+        })
         return new NextResponse(JSON.stringify((products)), { status: 200 })
     } catch (error) {
         return  new NextResponse(JSON.stringify({

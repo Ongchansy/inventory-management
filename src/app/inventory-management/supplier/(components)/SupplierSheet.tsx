@@ -9,7 +9,7 @@ import Image from 'next/image';
 const SupplierSheet: React.FC = () => {
     const { isViewSheetOpen, selectedSupplier, mode, closeViewSheet, updateSupplier, toggleViewSheet } = UseSupplierStore();
 
-    const { register, handleSubmit, reset, control, formState: { errors } } = useForm<Supplier>({
+    const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<Supplier>({
         defaultValues: {
             id: selectedSupplier?.id,
             name: selectedSupplier?.name,
@@ -19,6 +19,13 @@ const SupplierSheet: React.FC = () => {
     });
 
     const id = selectedSupplier?.id || '';
+
+    // When the form is opened, set the values dynamically
+    if (selectedSupplier) {
+        setValue('name', selectedSupplier.name || '');
+        setValue('contactInfo', selectedSupplier.contactInfo || '');
+        setValue('image', selectedSupplier.image || '');
+    }
 
     const onSubmit = (data: Supplier) => {
         updateSupplier(data, id); // Update the supplier in the store
