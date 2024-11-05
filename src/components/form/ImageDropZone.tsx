@@ -2,6 +2,7 @@ import { useDropzone } from "react-dropzone";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils"; // Assuming you have a utility for conditional classes
+import Image from "next/image";
 
 interface ImageDropzoneProps {
   onDrop: (file: File | null) => void;
@@ -49,10 +50,12 @@ export function ImageDropzone({ onDrop }: ImageDropzoneProps) {
 
       {imagePreview && (
         <div className="mt-4 flex flex-col items-center">
-          <img
+          <Image
             src={imagePreview}
             alt="Image preview"
             className="h-24 w-24 object-cover rounded-md"
+            width={100}
+            height={100}
           />
           <Button
             type="button"

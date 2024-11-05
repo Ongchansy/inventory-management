@@ -12,7 +12,7 @@ interface SupplierStore {
     selectSupplier: (supplier: Supplier, mode: 'view' | 'edit') => void; // Update selectSupplier signature
     closeViewSheet: () => void;
     createSupplier: (formData: FormData) => Promise<void>;
-    updateSupplier: (updatedSupplier: Supplier, id: string) => Promise<void>;
+    updateSupplier: (updatedSupplier: FormData, id: string) => Promise<void>;
     deleteSupplier: (supplierId: string) => Promise<void>;
 }
 
@@ -69,7 +69,7 @@ export const UseSupplierStore = create<SupplierStore>((set) => ({
     },
     
 
-    updateSupplier: async (updatedSupplier: Supplier, id: string) => {
+    updateSupplier: async (updatedSupplier: FormData, id: string) => {
         Swal.fire({
             title: 'Update supplier',
             text: 'Are you sure you want to update this supplier?',
@@ -81,10 +81,7 @@ export const UseSupplierStore = create<SupplierStore>((set) => ({
             if (result.isConfirmed) {
                 fetch(`/api/suppliers/${id}`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(updatedSupplier),
+                    body: updatedSupplier,
                 })
                     .then((response) => response.json())
                     .then((data) => {

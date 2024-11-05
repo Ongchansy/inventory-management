@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import path from 'path';
+import fs from 'fs';
 
 const prisma = new PrismaClient();
 
@@ -34,27 +36,53 @@ export const DELETE = async (req: NextRequest) => {
     }
 };
 
+// Utility function to handle file upload (reusable)
+async function uploadImageFile(image: File | null): Promise<string | null> {
+    if (!image) return null;
+
+    const arrayBuffer = await image.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
+    const uploadDir = path.join(process.cwd(), 'public/uploads');
+
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    const filePath = path.join(uploadDir, image.name);
+    fs.writeFileSync(filePath, uint8Array);
+    
+    return `/uploads/${image.name}`;
+}
+
+
 export const PUT = async (req: NextRequest) => {
     const id = req.nextUrl.pathname.split("/")[3];
-    const {
-        name,
-        image,
-        contactInfo
-    } = await req.json();
     try {
+        // Use FormData to handle the incoming request
+        const formData = await req.formData();
+        
+        const name = formData.get('name') as string;
+        const contactInfo = formData.get('contactInfo') as string;
+        const image = formData.get('image') as File; // Handle image from FormData
+
+        let imageUrl: string | null = null;
+        
+        if (image) {
+            imageUrl = await uploadImageFile(image);
+        }
+
         const updatedSupplier = await prisma.supplier.update({
-            where: {
-                id,
-             },
+            where: { id },
             data: {
                 name,
-                image,
-                contactInfo
+                image: imageUrl,
+                contactInfo,
             },
         });
-        return new Response(JSON.stringify(updatedSupplier), { status: 200 });
+
+        return NextResponse.json(updatedSupplier, { status: 200 });
     } catch (error) {
         console.error(error);
-        return new Response(JSON.stringify({ error: "Failed to update user" }), { status: 500 });
+        return NextResponse.json({ error: "Failed to update supplier" }, { status: 500 });
     }
 };
