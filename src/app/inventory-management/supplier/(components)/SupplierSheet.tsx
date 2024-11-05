@@ -48,7 +48,7 @@ const SupplierSheet: React.FC = () => {
                             </p>
                             <div>
                                 <strong className="mb-4">Image</strong>
-                                {selectedSupplier?.image && <Image src={selectedSupplier.image} className="w-24 h-24" alt="" />}
+                                {selectedSupplier?.image && <Image src={selectedSupplier.image} width={200} height={200} className="w-24 h-24" alt="" />}
                             </div>
                             <p className="text-gray-700">
                                 <strong>Contact Info:</strong> {selectedSupplier?.contactInfo}

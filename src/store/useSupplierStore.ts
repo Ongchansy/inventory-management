@@ -11,7 +11,7 @@ interface SupplierStore {
     fetchSuppliers: () => Promise<void>;
     selectSupplier: (supplier: Supplier, mode: 'view' | 'edit') => void; // Update selectSupplier signature
     closeViewSheet: () => void;
-    createSupplier: (newSupplier: Supplier) => Promise<void>;
+    createSupplier: (formData: FormData) => Promise<void>;
     updateSupplier: (updatedSupplier: Supplier, id: string) => Promise<void>;
     deleteSupplier: (supplierId: string) => Promise<void>;
 }
@@ -34,26 +34,32 @@ export const UseSupplierStore = create<SupplierStore>((set) => ({
 
     closeViewSheet: () => set({ isViewSheetOpen: false, selectedSupplier: null, mode: null }), // Reset selectedSupplier and mode on close
 
-    createSupplier: async (newSupplier: Supplier) => {
-        const response = await fetch('/api/suppliers', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newSupplier),
-        });
-
-        if (response.ok) {
-            const createdSupplier: Supplier = await response.json();
-            set((state) => ({
-                suppliers: [...state.suppliers, createdSupplier],
-            }));
-            Swal.fire({
-                title: 'Supplier created!',
-                text: `Supplier ${createdSupplier?.name} has been created.`,
-                icon: 'success',
+    createSupplier: async (formData: FormData) => {
+        try {
+            const response = await fetch('/api/suppliers', {
+                method: 'POST',
+                body: formData,
             });
-        } else {
+    
+            if (response.ok) {
+                const createdSupplier: Supplier = await response.json();
+                set((state) => ({
+                    suppliers: [...state.suppliers, createdSupplier],
+                }));
+                Swal.fire({
+                    title: 'Supplier created!',
+                    text: `Supplier ${createdSupplier?.name} has been created.`,
+                    icon: 'success',
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Failed to create supplier.',
+                    icon: 'error',
+                });
+            }
+        } catch (error) {
+            console.error("Failed to create supplier:", error);
             Swal.fire({
                 title: 'Error',
                 text: 'Failed to create supplier.',
@@ -61,6 +67,7 @@ export const UseSupplierStore = create<SupplierStore>((set) => ({
             });
         }
     },
+    
 
     updateSupplier: async (updatedSupplier: Supplier, id: string) => {
         Swal.fire({
