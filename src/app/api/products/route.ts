@@ -1,3 +1,4 @@
+import uploadImageFile from "@/helper/file-upload"
 import {PrismaClient} from "@prisma/client"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -5,18 +6,19 @@ const prisma = new PrismaClient()
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
 
-    const {
-        
-            name,
-            description,
-            price,
-            image,
-            quantity,
-            categoryId,
-            supplierId,
-            userId
-        
-    } = await req.json()
+    const formData = await req.formData()
+
+    const name = formData.get('name') as string
+    const description = formData.get('description') as string
+    const price = parseInt(formData.get('price') as string)
+    const quantity = parseInt(formData.get('quantity') as string)
+    const categoryId = formData.get('categoryId') as string;
+    const supplierId = formData.get('supplierId') as string
+    const userId = formData.get('userId') as string
+    const image = formData.get('image') as File
+
+    let imageUrl = await uploadImageFile(image)
+
     
     try {
         const product = await prisma.product.create({
@@ -24,7 +26,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
                 name,
                 description,
                 price,
-                image,
+                image: imageUrl,
                 quantity,
                 categoryId,
                 supplierId,

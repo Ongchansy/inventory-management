@@ -11,8 +11,8 @@ interface UserStore {
     fetchProducts: () => Promise<void>;
     selectProduct: (product: Product, mode: 'view' | 'edit' | null) => void; // Update selectUser signature
     closeViewSheet: () => void;
-    createProduct: (newProduct: Product) => Promise<void>;
-    updateProduct: (updateProduct: Product, id: string) => Promise<void>;
+    createProduct: (newProduct: FormData) => Promise<void>;
+    updateProduct: (updateProduct: FormData, id: string) => Promise<void>;
     deleteProduct: (productId: string) => Promise<void>;
 }
 
@@ -31,13 +31,10 @@ export const UseProductStore = create<UserStore>((set) => ({
     selectProduct: (product: Product, mode: 'view' | 'edit' | null) => set({ selectedProduct: product, mode }),
 
     closeViewSheet: () => set({ isViewSheetOpen: false }),
-    createProduct: async (newProduct: Product) => {
+    createProduct: async (newProduct: FormData) => {
         const response = await fetch('/api/products', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newProduct),
+            body: newProduct,
         });
 
         if (response.ok) {
@@ -58,58 +55,51 @@ export const UseProductStore = create<UserStore>((set) => ({
             });
         }
     },
-    updateProduct: async (updateProduct: Product, id: string) => {
-    Swal.fire({
-        title: 'Update product',
-        text: 'Are you sure you want to update this product?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Update',
-        cancelButtonText: 'Cancel',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Convert price and quantity to numbers
-            const updatedData = {
-                ...updateProduct,
-                price: parseFloat(updateProduct.price.toString()),  // Ensure price is a float
-                quantity: parseInt(updateProduct.quantity.toString()),  // Ensure quantity is an integer
-                // If image is an object, make sure to handle it appropriately
-            };
-
-            fetch(`/api/products/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedData), // Send updated data
-            })
+    updateProduct: async (updateProduct: FormData, id: string) => {
+        Swal.fire({
+            title: 'Update product',
+            text: 'Are you sure you want to update this product?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Update',
+            cancelButtonText: 'Cancel',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/api/products/${id}`, {
+                    method: 'PUT',
+                    body: updateProduct,
+                })
                 .then((response) => {
                     if (!response.ok) {
-                        throw new Error('Failed to update product');
+                        throw new Error('Network response was not ok');
                     }
                     return response.json();
                 })
-                .then((data) => {
+                .then((updatedProduct) => {
+                    // Update the state with the new product data
                     set((state) => ({
-                        products: state.products.map((product) => (product.id === id ? data : product)),
+                        products: state.products.map((product) =>
+                            product.id === id ? { ...product, ...updatedProduct } : product
+                        ),
                     }));
                     Swal.fire({
                         title: 'Product updated!',
-                        text: `Product ${data.name} has been updated.`,
+                        text: `Product has been updated.`,
                         icon: 'success',
                     });
                 })
-                .catch(() => {
+                .catch((error) => {
+                    console.error('Update failed:', error);
                     Swal.fire({
                         title: 'Error',
                         text: 'Failed to update product.',
                         icon: 'error',
                     });
                 });
-        }
-    });
-},
-
+            }
+        });
+    },
+    
     deleteProduct: async (productId: string) => {
         Swal.fire({
             title: 'Delete product',

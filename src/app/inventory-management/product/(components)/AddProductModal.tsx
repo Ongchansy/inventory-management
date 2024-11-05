@@ -1,4 +1,5 @@
 "use client";
+import { ImageDropzone } from "@/components/form/ImageDropZone";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,7 +18,18 @@ import { UseProductStore} from "@/store/useProductStore";
 import { UseSupplierStore} from "@/store/useSupplierStore";
 import { UseUserStore } from "@/store/useTransactionStore";
 import { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form"
+
+interface ProductModel {
+  name: string;
+  description: string;
+  price: number;
+  image: File | null;
+  quantity: number;
+  categoryId: string;
+  supplierId: string;
+  userId: string;
+}
 
 export function AddProductModal() {
   const { modals, toggleModal, closeModal } = useModal();
@@ -37,14 +49,15 @@ export function AddProductModal() {
     register,
     handleSubmit,
     reset,
+    setValue,
     control,
     formState: { errors },
-  } = useForm({
+  } = useForm<ProductModel>({
     defaultValues: {
       name: "",
       description: "",
       price: 0,
-      image: "",
+      image: null,
       quantity: 0,
       categoryId: "",
       supplierId: "",
@@ -52,14 +65,27 @@ export function AddProductModal() {
     },
   });
 
-  const onSubmit = async (data: any) => {
-    const formattedData = {
-      ...data,
-      price: parseFloat(data.price), // Convert price to a Float
-      quantity: parseInt(data.quantity), // Convert quantity to an Int
-    };
+  const handleImageDrop = (file: File | null) => {
+    setValue("image", file);
+  };
 
-    await createProduct(formattedData);
+  const onSubmit = async (data: ProductModel) => {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("price", data.price.toString());
+    formData.append("quantity", data.quantity.toString());
+    formData.append("categoryId", data.categoryId);
+    formData.append("supplierId", data.supplierId);
+    formData.append("userId", data.userId);
+
+    if (data.image) {
+      formData.append("image", data.image);
+    }else{
+      formData.append("image", "");
+    }
+      
+    await createProduct(formData);
     closeModal("product");
     reset();
   };
@@ -102,13 +128,11 @@ export function AddProductModal() {
               {errors.price && <p className="text-red-600 text-xs">Price is required and must be a positive number</p>}
             </div>
             <div>
-              <Label htmlFor="image">Image URL</Label>
-              <Input
-                id="image"
-                placeholder="Image URL"
-                {...register("image", { required: true })}
-              />
-              {errors.image && <p className="text-red-600 text-xs">Image URL is required</p>}
+              <Label htmlFor="image">Image</Label>
+              <ImageDropzone onDrop={handleImageDrop} />
+              {errors.image && (
+                <p className="text-red-600 text-xs">Image is required</p>
+              )}
             </div>
             <div>
               <Label htmlFor="quantity">Quantity</Label>
