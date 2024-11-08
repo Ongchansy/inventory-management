@@ -23,6 +23,14 @@ model User {
   inventoryTransactions InventoryTransaction[]
 }
 
+model Users {
+  id         String   @id @default(uuid())
+  profilePic String?
+  username   String?   @unique
+  email      String   @unique
+  password   String // Make sure to hash this before saving
+}
+
 enum UserRole {
   ADMIN
   USER

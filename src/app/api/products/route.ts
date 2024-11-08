@@ -51,6 +51,11 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
             orderBy: {
                 name: "asc"
             },
+            include: {
+                category: true,
+                supplier: true,
+                user: true
+            }
         })
         return new NextResponse(JSON.stringify((products)), { status: 200 })
     } catch (error) {

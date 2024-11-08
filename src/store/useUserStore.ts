@@ -14,6 +14,7 @@ interface UserStore {
     createUser: (newUser: User) => Promise<void>;
     updateUser: (updatedUser: User, id: string) => Promise<void>;
     deleteUser: (userId: string) => Promise<void>;
+    fetchUser: (id: string) => Promise<void>;
 }
 
 export const UseUserStore = create<UserStore>((set) => ({
@@ -21,6 +22,12 @@ export const UseUserStore = create<UserStore>((set) => ({
     selectedUser: null,
     mode: null, // Initialize mode
     isViewSheetOpen: false,
+
+    fetchUser: async (id: string) => {
+        const response = await fetch(`/api/users/${id}`);
+        const data: User = await response.json();
+        set({ selectedUser: data });
+    },
 
     toggleViewSheet: () => set((state) => ({ isViewSheetOpen: !state.isViewSheetOpen })), // Toggle the view sheet
 

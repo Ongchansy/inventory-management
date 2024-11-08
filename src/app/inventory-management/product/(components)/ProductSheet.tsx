@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Product } from '@/types/types';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { UseProductStore } from '@/store/useProductStore';
 import InputForm from '@/components/form/InputForm';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
+import { UseCategoryStore } from '@/store/useCategoryStore';
+import { UseSupplierStore } from '@/store/useSupplierStore';
+import { UseUserStore } from '@/store/useTransactionStore';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 
 const ProductSheet: React.FC = () => {
     const { isViewSheetOpen, selectedProduct, mode, closeViewSheet, updateProduct, toggleViewSheet } = UseProductStore();
+    const {categories, fetchCategories} = UseCategoryStore()
+  const {suppliers, fetchSuppliers} = UseSupplierStore()
+  const {users, fetchUsers} = UseUserStore()
 
-    const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<Product>({
+    const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<Product>({
         defaultValues: {
             id: selectedProduct?.id,
             name: selectedProduct?.name,
@@ -40,7 +48,10 @@ const ProductSheet: React.FC = () => {
             setValue('userId', selectedProduct.userId || '');
             setImagePreview(selectedProduct.image || null);
         }
-    }, [selectedProduct, setValue]);
+        fetchCategories();
+        fetchSuppliers();
+        fetchUsers();
+    }, [selectedProduct, setValue, fetchCategories, fetchSuppliers, fetchUsers]);
 
     const handleImageDrop = (acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
@@ -103,9 +114,9 @@ const ProductSheet: React.FC = () => {
                             <p className="text-gray-700"><strong>Description:</strong> {selectedProduct?.description}</p>
                             <p className="text-gray-700"><strong>Price:</strong> ${selectedProduct?.price?.toFixed(2)}</p>
                             <p className="text-gray-700"><strong>Quantity:</strong> {selectedProduct?.quantity}</p>
-                            <p className="text-gray-700"><strong>Category:</strong> {selectedProduct?.categoryId}</p>
-                            <p className="text-gray-700"><strong>Supplier:</strong> {selectedProduct?.supplierId}</p>
-                            <p className="text-gray-700"><strong>User:</strong> {selectedProduct?.userId}</p>
+                            <p className="text-gray-700"><strong>Category:</strong> {selectedProduct?.category?.name}</p>
+                            <p className="text-gray-700"><strong>Supplier:</strong> {selectedProduct?.supplier?.name}</p>
+                            <p className="text-gray-700"><strong>User:</strong> {selectedProduct?.user?.username}</p>
                             <div>
                                 <strong>Image</strong>
                                 {imagePreview && (
@@ -145,35 +156,83 @@ const ProductSheet: React.FC = () => {
                                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
                                 />
                             </div>
-                            <div className="mb-4">
-                                <InputForm
-                                    type="text"
-                                    register={register}
-                                    label="Category"
-                                    name="categoryId"
-                                    placeholder="Enter Product Category"
-                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+                            <div className="pb-4">
+                                <Controller
+                                name="categoryId"
+                                control={control}
+                                render={({ field: { onChange, value } }) => (
+                                    <Select onValueChange={onChange} defaultValue={value} value={value}>
+                                    <Label className="text-right">
+                                        Category
+                                    </Label>
+                                    <SelectTrigger className="col-span-3">
+                                        <SelectValue placeholder="Select Category" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                        {categories.map((category) => (
+                                            <SelectItem key={category.id} value={category.id}>
+                                                {category.name}
+                                            </SelectItem>
+                                        ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                    </Select>
+                                )}
                                 />
+                                {errors.categoryId && <p className="text-red-600 text-xs">Category is required</p>}
                             </div>
-                            <div className="mb-4">
-                                <InputForm
-                                    type="text"
-                                    register={register}
-                                    label="Supplier"
-                                    name="supplierId"
-                                    placeholder="Enter Product Supplier"
-                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+                            <div className="pb-4">
+                                <Controller
+                                name="supplierId"
+                                control={control}
+                                render={({ field: { onChange, value } }) => (
+                                    <Select onValueChange={onChange} defaultValue={value} value={value}>
+                                    <Label className="text-right">
+                                        Supplier
+                                    </Label>
+                                    <SelectTrigger className="col-span-3">
+                                        <SelectValue placeholder="Select Category" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                        {suppliers.map((supplier) => (
+                                            <SelectItem key={supplier.id} value={supplier.id}>
+                                                {supplier.name}
+                                            </SelectItem>
+                                        ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                    </Select>
+                                )}
                                 />
+                                {errors.supplierId && <p className="text-red-600 text-xs">Supplier is required</p>}
                             </div>
-                            <div className="mb-4">
-                                <InputForm
-                                    type="text"
-                                    register={register}
-                                    label="User"
-                                    name="userId"
-                                    placeholder="Enter Product User"
-                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200"
+                            <div className="pb-4">
+                                <Controller
+                                name="userId"
+                                control={control}
+                                render={({ field: { onChange, value } }) => (
+                                    <Select onValueChange={onChange} defaultValue={value} value={value}>
+                                    <Label className="text-right">
+                                        User
+                                    </Label>
+                                    <SelectTrigger className="col-span-3">
+                                        <SelectValue placeholder="Select User" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                        {users.map((User) => (
+                                            <SelectItem key={User.id} value={User.id}>
+                                                {User.username}
+                                            </SelectItem>
+                                        ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                    </Select>
+                                )}
                                 />
+                                {errors.userId && <p className="text-red-600 text-xs">User is required</p>}
                             </div>
                             <div className="mb-4">
                                 <InputForm

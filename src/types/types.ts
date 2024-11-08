@@ -8,18 +8,6 @@ export interface User {
     role : string,
 }
 
-export interface Product {
-    id          :string  
-    name        :string
-    description :string
-    price      : number
-    image       :string
-    quantity    :number
-    categoryId  :string
-    supplierId  :string
-    userId     :string   
-}
-
 export interface Category {
     id          :string
     name        :string
@@ -32,3 +20,20 @@ export interface Supplier {
     image          :string
     contactInfo          :string
 }
+
+export interface Product {
+    id          :string  
+    name        :string
+    description :string
+    price      : number
+    image       :string
+    quantity    :number
+    categoryId  :string
+    supplierId  :string
+    userId     :string 
+    category  :Category
+    supplier : Supplier
+    user: User
+      
+}
+

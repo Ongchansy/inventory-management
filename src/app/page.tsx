@@ -1,26 +1,28 @@
 "use client";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { redirect, useRouter } from "next/navigation";
 
-export default function Home() {
+const DashboardPage = () => {
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    // You can add logic to check authentication here if needed
-    const isAuthenticated = true; // Replace with your auth logic
+    if (status === "unauthenticated") {
+      router.push("/inventory-management/home/dashboard/");
+    }
+  }, [status, router]);
 
-    if (!isAuthenticated) {
-      router.push("/auth"); // Redirect to the auth route
-    }
-    if(isAuthenticated){
-      redirect("/inventory-management/home/dashboard")
-    }
-  }, [router]);
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div>
-      {/* Fallback UI until redirect occurs */}
-      Redirecting to login...
+      <h1>Dashboard</h1>
+      <button onClick={() => signOut()}>Sign Out</button>
     </div>
   );
-}
+};
+
+export default DashboardPage;

@@ -1,13 +1,20 @@
+"use client"
 import Footer from "@/components/dashboard/Footer"
 import Header from "@/components/dashboard/Header"
 import SideBars from "@/components/dashboard/SideBars"
 import { FC, ReactNode } from "react"
+import { useSession } from "next-auth/react"
 
 interface LayoutProps {
     children: ReactNode
 }
 
 const Layout: FC<LayoutProps> = ({ children }) => {
+
+    const { data: session, status } = useSession()
+
+
+
     return (
         <div className="flex h-screen ">
             <SideBars />
@@ -17,7 +24,13 @@ const Layout: FC<LayoutProps> = ({ children }) => {
 
                     <div className="flex-grow ">
                         <div className="p-2 md:p-8">
-                            {children}
+                            {status === "loading" ? (
+                                <div>Loading...</div>
+                            ) : session ? (
+                                <div>{children}</div>
+                            ) : (
+                                <div></div>
+                            )}
                         </div>
                         <Footer />
                     </div>

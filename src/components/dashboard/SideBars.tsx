@@ -5,10 +5,13 @@ import { Store, Users, ShoppingCart, PackageSearch, LayoutDashboard, HandCoins }
 import { ScrollArea } from "@/components/ui/scroll-area"
 import Link  from 'next/link'
 import useUiStore from '@/store/uiStore'
+import { useSession } from 'next-auth/react'
 
 const SideBars = () => {
     const [active, setActive] = useState<string | null>(null)
     const { toggle } = useUiStore()
+
+    const { data: session } = useSession()
 
     const menuItems = [
         { icon: LayoutDashboard, label: 'DashBoard', path: '/home/dashboard' },
@@ -39,7 +42,13 @@ const SideBars = () => {
                 <p className={`${toggle ? 'block' : 'hidden'} text-xl md:text-2xl`}>Inventory</p>
             </div>
             <ScrollArea className="h-[calc(100vh-4rem)] mt-3">
-                <div>{menuItems.map((item) => <MenuItem key={item.label} {...item} />)}</div>
+                {
+                    session ? (
+                        <div>{menuItems.map((item) => <MenuItem key={item.label} {...item} />)}</div>
+                    ) : (
+                        <div></div>
+                    )
+                }
             </ScrollArea>
         </div>
     )
