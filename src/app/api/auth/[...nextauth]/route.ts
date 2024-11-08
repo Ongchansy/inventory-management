@@ -3,7 +3,6 @@ import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
@@ -36,22 +35,20 @@ export const authOptions: NextAuthOptions = {
 
         return user;
       },
+      
     }),
 
     GithubProvider({
       clientId: process.env.GITHUB_ID ?? "",
       clientSecret: process.env.GITHUB_SECRET ?? "",
     }),
+
   ],
 };
 
-const authHandler = NextAuth(authOptions);
+export const handlers = NextAuth(authOptions);
 
-// Define GET and POST handlers compatible with Next.js API routes in the app directory
-export async function GET(req: NextRequest) {
-  return authHandler(req, new NextResponse());
-}
+export const GET = handlers;
+export const POST = handlers;
 
-export async function POST(req: NextRequest) {
-  return authHandler(req, new NextResponse());
-}
+
