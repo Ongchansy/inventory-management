@@ -9,7 +9,7 @@ export default withAuth(
   },
   {
     pages: {
-      signIn: "/inventory-management/sign-in",
+      signIn: "/sign-in",
     },
   }
 );
