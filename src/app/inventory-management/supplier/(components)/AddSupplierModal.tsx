@@ -13,15 +13,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useModal from "@/store/useModal";
 import { UseSupplierStore } from "@/store/useSupplierStore";
+import { Supplier } from "@/types/types";
+import { UploadDropzone } from "@/util/uploadthing";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-
-export interface Supplier {
-  id: string;
-  name: string;
-  image: File | null;
-  contactInfo: string;
-}
 
 export function AddSupplierModal() {
   const { modals, toggleModal, closeModal } = useModal();
@@ -41,40 +36,26 @@ export function AddSupplierModal() {
     defaultValues: {
       id: "",
       name: "",
-      image: null,
+      image: "",
       contactInfo: "",
     },
   });
 
-  const handleImageDrop = (file: File | null) => {
-    setValue("image", file);
-  };
-
   const onSubmit = async (data: Supplier) => {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("contactInfo", data.contactInfo);
-
-    if (data.image) {
-      formData.append("image", data.image);
-    } else {
-      formData.append("image", ""); // Fallback if no image is provided
-    }
-
-    await createSupplier(formData);
+    await createSupplier(data);
     closeModal("supplier");
     reset();
   };
 
   return (
     <Dialog open={modals.supplier} onOpenChange={() => toggleModal("supplier")}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] ">
         <DialogHeader>
           <DialogTitle>Add Supplier</DialogTitle>
           <DialogDescription>Add a new supplier to the store.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
-          <div className="grid gap-4 py-4">
+          <div className="flex flex-col gap-4 py-4">
             <div>
               <Label htmlFor="name">Supplier Name</Label>
               <Input
@@ -83,14 +64,6 @@ export function AddSupplierModal() {
                 {...register("name", { required: true })}
               />
               {errors.name && <p className="text-red-600 text-xs">Name is required</p>}
-            </div>
-
-            <div>
-              <Label htmlFor="image">Image</Label>
-              <ImageDropzone onDrop={handleImageDrop} />
-              {errors.image && (
-                <p className="text-red-600 text-xs">Image is required</p>
-              )}
             </div>
 
             <div>
@@ -103,6 +76,25 @@ export function AddSupplierModal() {
               {errors.contactInfo && (
                 <p className="text-red-600 text-xs">Contact Info is required</p>
               )}
+            </div>
+
+            <div className="col-span-2">
+              <Label htmlFor="image">Image</Label>
+              <UploadDropzone
+                endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  const fileUrl = res?.[0].url;
+                  if (fileUrl) {
+                    setValue("image", fileUrl);
+                  }
+                }}
+                onUploadError={(error: Error) => {
+                  console.log(`Error: ${error.message}`);
+                }}
+                onUploadProgress={(progress) => {
+                  console.log(`Upload Progress: ${progress}%`);
+                }}
+              />
             </div>
           </div>
           <DialogFooter>

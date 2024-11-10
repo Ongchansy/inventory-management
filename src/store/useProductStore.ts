@@ -11,8 +11,8 @@ interface UserStore {
     fetchProducts: () => Promise<void>;
     selectProduct: (product: Product, mode: 'view' | 'edit' | null) => void; // Update selectUser signature
     closeViewSheet: () => void;
-    createProduct: (newProduct: FormData) => Promise<void>;
-    updateProduct: (updateProduct: FormData, id: string) => Promise<void>;
+    createProduct: (newProduct: Product) => Promise<void>;
+    updateProduct: (updateProduct: Product, id: string) => Promise<void>;
     deleteProduct: (productId: string) => Promise<void>;
 }
 
@@ -31,10 +31,10 @@ export const UseProductStore = create<UserStore>((set) => ({
     selectProduct: (product: Product, mode: 'view' | 'edit' | null) => set({ selectedProduct: product, mode }),
 
     closeViewSheet: () => set({ isViewSheetOpen: false }),
-    createProduct: async (newProduct: FormData) => {
+    createProduct: async (newProduct: Product) => {
         const response = await fetch('/api/products', {
             method: 'POST',
-            body: newProduct,
+            body: JSON.stringify(newProduct),
         });
 
         if (response.ok) {
@@ -55,7 +55,7 @@ export const UseProductStore = create<UserStore>((set) => ({
             });
         }
     },
-    updateProduct: async (updateProduct: FormData, id: string) => {
+    updateProduct: async (updateProduct: Product, id: string) => {
         Swal.fire({
             title: 'Update product',
             text: 'Are you sure you want to update this product?',
@@ -67,7 +67,7 @@ export const UseProductStore = create<UserStore>((set) => ({
             if (result.isConfirmed) {
                 fetch(`/api/products/${id}`, {
                     method: 'PUT',
-                    body: updateProduct,
+                    body: JSON.stringify(updateProduct),
                 })
                 .then((response) => {
                     if (!response.ok) {

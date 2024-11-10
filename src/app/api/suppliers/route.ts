@@ -6,17 +6,17 @@ const prisma = new PrismaClient();
 
 export const POST = async (req: NextRequest) => {
   try {
-    const formData = await req.formData();
-    const name = formData.get("name") as string;
-    const contactInfo = formData.get("contactInfo") as string;
-    const image = formData.get("image") as File;
-
-    let imageUrl = await uploadImageFile(image)
+    const {
+      name,
+      image,
+      contactInfo,
+    } = await req.json();
+    
 
     const createSupplier = await prisma.supplier.create({
       data: {
         name,
-        image: imageUrl,
+        image,
         contactInfo,
       },
     });

@@ -11,8 +11,8 @@ interface SupplierStore {
     fetchSuppliers: () => Promise<void>;
     selectSupplier: (supplier: Supplier, mode: 'view' | 'edit') => void; // Update selectSupplier signature
     closeViewSheet: () => void;
-    createSupplier: (formData: FormData) => Promise<void>;
-    updateSupplier: (updatedSupplier: FormData, id: string) => Promise<void>;
+    createSupplier: (formData: Supplier ) => Promise<void>;
+    updateSupplier: (updatedSupplier: Supplier, id: string) => Promise<void>;
     deleteSupplier: (supplierId: string) => Promise<void>;
 }
 
@@ -34,11 +34,11 @@ export const UseSupplierStore = create<SupplierStore>((set) => ({
 
     closeViewSheet: () => set({ isViewSheetOpen: false, selectedSupplier: null, mode: null }), // Reset selectedSupplier and mode on close
 
-    createSupplier: async (formData: FormData) => {
+    createSupplier: async (formData: Supplier) => {
         try {
             const response = await fetch('/api/suppliers', {
                 method: 'POST',
-                body: formData,
+                body: JSON.stringify(formData),
             });
     
             if (response.ok) {
@@ -69,7 +69,7 @@ export const UseSupplierStore = create<SupplierStore>((set) => ({
     },
     
 
-    updateSupplier: async (updatedSupplier: FormData, id: string) => {
+    updateSupplier: async (updatedSupplier: Supplier, id: string) => {
         Swal.fire({
             title: 'Update supplier',
             text: 'Are you sure you want to update this supplier?',
@@ -81,7 +81,7 @@ export const UseSupplierStore = create<SupplierStore>((set) => ({
             if (result.isConfirmed) {
                 fetch(`/api/suppliers/${id}`, {
                     method: 'PUT',
-                    body: updatedSupplier,
+                    body: JSON.stringify(updatedSupplier),
                 })
                     .then((response) => response.json())
                     .then((data) => {

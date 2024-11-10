@@ -6,6 +6,8 @@ import { UseSupplierStore } from '@/store/useSupplierStore';
 import InputForm from '@/components/form/InputForm';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
+import { UploadDropzone } from '@/util/uploadthing';
+import { Label } from '@/components/ui/label';
 
 const SupplierSheet: React.FC = () => {
     const { isViewSheetOpen, selectedSupplier, mode, closeViewSheet, updateSupplier, toggleViewSheet } = UseSupplierStore();
@@ -19,7 +21,6 @@ const SupplierSheet: React.FC = () => {
         }
     });
 
-    const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(selectedSupplier?.image || null);
     const [isImageRemoved, setIsImageRemoved] = useState(false);
 
@@ -32,40 +33,16 @@ const SupplierSheet: React.FC = () => {
         }
     }, [selectedSupplier, setValue]);
 
-    const handleImageDrop = (acceptedFiles: File[]) => {
-        const file = acceptedFiles[0];
-        setImageFile(file);
-        setImagePreview(URL.createObjectURL(file));
-        setIsImageRemoved(false);
-    };
-
     const handleRemoveImage = () => {
-        setImageFile(null);
+        setValue('image', '');
         setImagePreview(null);
         setIsImageRemoved(true); // Mark the image as removed
     };
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop: handleImageDrop,
-        accept: { 'image/*': [] },
-        multiple: false,
-    });
-
     const onSubmit = async (data: Supplier) => {
-        const formData = new FormData();
-        // Include the new image file or set image to null if removed
-        if (imageFile) {
-            formData.append('image', imageFile);
-        } else if (isImageRemoved) {
-            formData.append('image', ''); // Ensure empty string is added if removed
-        }
-    
-        formData.append('name', data.name);
-        formData.append('contactInfo', data.contactInfo);
-    
         try {
             if (mode === 'edit') {
-                await updateSupplier(formData, selectedSupplier?.id || '');
+                await updateSupplier(data, selectedSupplier?.id || '');
             }
         } catch (error) {
             console.error("Error updating supplier:", error);
@@ -122,36 +99,29 @@ const SupplierSheet: React.FC = () => {
                             </div>
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700">Image</label>
-                                
                                 {imagePreview && !isImageRemoved ? (
-                                    <div className="relative">
-                                        <Image
-                                            src={imagePreview}
-                                            width={100}
-                                            height={100}
-                                            className="w-24 h-24 object-cover rounded-md"
-                                            alt="Selected image preview"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={handleRemoveImage}
-                                            className="absolute top-0 right-0 text-red-600 bg-white rounded-full p-1 hover:bg-gray-100"
-                                        >
-                                            Remove
+                                    <div className="mt-2">
+                                        <Image src={imagePreview} alt="Image Preview" width={100} height={100} />
+                                        <button type="button" onClick={handleRemoveImage} className="text-red-500 mt-2">
+                                            Remove Image
                                         </button>
                                     </div>
                                 ) : (
-                                    <div
-                                        {...getRootProps()}
-                                        className="border-2 border-dashed p-4 rounded-md cursor-pointer text-gray-500 hover:border-blue-500 hover:bg-gray-50"
-                                    >
-                                        <input {...getInputProps()} />
-                                        {isDragActive ? (
-                                            <p>Drop the files here ...</p>
-                                        ) : (
-                                            <p>Drag and drop an image here, or click to select</p>
-                                        )}
-                                    </div>
+                                    <UploadDropzone
+                                        endpoint="imageUploader"
+                                        onClientUploadComplete={(res) => {
+                                        const fileUrl = res?.[0].url;
+                                        if (fileUrl) {
+                                            setValue("image", fileUrl);
+                                        }
+                                        }}
+                                        onUploadError={(error: Error) => {
+                                        console.log(`Error: ${error.message}`);
+                                        }}
+                                        onUploadProgress={(progress) => {
+                                        console.log(`Upload Progress: ${progress}%`);
+                                        }}
+                                    />
                                 )}
                             </div>
                             <button
