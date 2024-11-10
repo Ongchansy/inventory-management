@@ -9,7 +9,7 @@ export default withAuth(
   },
   {
     pages: {
-      signIn: "/sign-in",
+      // signIn: "/",
     },
   }
 );
@@ -17,11 +17,11 @@ export default withAuth(
 // Protect the `/inventory-management/home/dashboard` route
 export const config = {
   matcher: [
-    "/inventory-management/home/dashboard",
-    "/inventory-management/user/(.*)",
-    "/inventory-management/product/(.*)",
-    "/inventory-management/category/(.*)",
-    "/inventory-management/supplier/(.*)",
-    "/inventory-management/transaction/(.*)",
+    // "/inventory-management/home/dashboard",
+    // "/inventory-management/user/(.*)",
+    // "/inventory-management/product/(.*)",
+    // "/inventory-management/category/(.*)",
+    // "/inventory-management/supplier/(.*)",
+    // "/inventory-management/transaction/(.*)",
   ],
 };
