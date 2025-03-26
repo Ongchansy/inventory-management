@@ -38,39 +38,41 @@ const SignIn: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-3xl font-bold text-center mb-6">Sign In</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <InputForm
-          label="Email"
-          name="email"
-          placeholder="Enter your email"
-          type="email"
-          register={register}
-          error={errors.email?.message}
-          
-        />
-        <InputForm
-          label="Password"
-          name="password"
-          placeholder="Enter your password"
-          type="password"
-          register={register}
-          error={errors.password?.message}
-          
-        />
-        <div className="flex justify-center gap-2 items-center">
+      <div className="flex items-center justify-center h-screen">
+          <div className="w-[450px] mx-auto mt-8 p-6 bg-white shadow-md rounded-lg">
+              <h1 className="text-3xl font-bold text-center mb-6">Sign In</h1>
+              <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
+                  <InputForm
+                      label="Email"
+                      name="email"
+                      placeholder="Enter your email"
+                      type="email"
+                      register={register}
+                      error={errors.email?.message}
 
-            <Button type="submit" variant="outline" className="w-full mt-4">
-                Sign In
-            </Button>
-            <Button type="submit" variant="default" className="w-full mt-4" onClick={() => signIn("github")}>
-                Sign In With Github
-            </Button>
-        </div>
-        <Link href="/sign-up">Don't have an account? <span className="text-blue-500">Sign Up</span></Link>
-      </form>
-    </div>
+                  />
+                  <InputForm
+                      label="Password"
+                      name="password"
+                      placeholder="Enter your password"
+                      type="password"
+                      register={register}
+                      error={errors.password?.message}
+
+                  />
+                  <div className="flex justify-center gap-2 items-center">
+
+                      <Button type="submit" variant="outline" className="w-full mt-4">
+                          Sign In
+                      </Button>
+                      <Button type="submit" variant="default" className="w-full mt-4" onClick={() => signIn("google")}>
+                          Sign In With Google
+                      </Button>
+                  </div>
+                  <Link href="/sign-up">Don't have an account? <span className="text-blue-500">Sign Up</span></Link>
+              </form>
+          </div>
+      </div>
   );
 };
 
